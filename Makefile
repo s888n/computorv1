@@ -9,7 +9,7 @@ RESET = \033[0m
 
 NAME = computor
 CC = cc
-CFLAGS = -Wall #-Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -std=c99 -pedantic
 OBJ_DIR = objs
 SRCS_DIR = src
 SRCS = $(wildcard $(SRCS_DIR)/*.c)

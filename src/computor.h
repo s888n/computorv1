@@ -29,7 +29,7 @@ void parse_equation(char *equation);
 void parse_equation_side(char *side, int sign);
 
 // solve
-size_t get_degree(double *coef);
+int get_degree(double *coef);
 void solve_equation(double *coef);
 
 #endif

@@ -16,8 +16,8 @@ long long gcf(long long a, long long b){
   return a;
 }
 
-size_t get_degree(double *coef){
-  for(size_t i = MAX_DEGREE; i >=0; i--){
+int get_degree(double *coef){
+  for(int i = MAX_DEGREE; i >= 0; i--){
       if(m_abs(coef[i]) >= EPSILON)
         return i;
   }
