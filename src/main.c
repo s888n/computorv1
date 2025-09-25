@@ -1,18 +1,17 @@
-# include "computor.h"
+# include "../include/computor.h"
 
 int main(int ac, char **av) {
-    if (ac != 2) {
-        printf("Usage: %s \"equation\"\n", av[0]);
-        return 1;
-    }
-    // char *eq = strdup(av[1]);
-    double coef[MAX_DEGREE + 1] = {0};
-    // parse_equation(eq);
-    size_t degree =  get_degree(coef);
-    printf("degree %zu", degree);
-    // print_reduced_form(degree);
-    // solve(degree);
 
-    // free(eq);
-    return 0;
+  if (ac != 2){
+    printf("Usage: %s \"equation\"\n", av[0]);
+    return 1;
+  }
+  Parser parser;
+  lex_init(&parser.lexer, av[1]);
+
+  Node *root = NULL;
+  root = parse_equation(&parser);
+  print_ast(root, "", 1);
+  free_node(root);
+  return 0;
 }

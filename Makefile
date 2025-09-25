@@ -9,7 +9,7 @@ RESET = \033[0m
 
 NAME = computor
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -std=c99 -pedantic
+CFLAGS = #-Wall -Wextra -Werror -std=c99 #-pedantic
 OBJ_DIR = objs
 SRCS_DIR = src
 SRCS = $(wildcard $(SRCS_DIR)/*.c)
@@ -28,6 +28,8 @@ $(OBJ_DIR)/%.o: $(SRCS_DIR)/%.c
 $(OBJ_DIR):
 	@mkdir -p $(OBJ_DIR)
 
+tests:
+	
 clean:
 	@rm -rf $(OBJ_DIR)
 	@echo "$(RED)Object files removed!$(RESET)"
@@ -38,4 +40,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re tests

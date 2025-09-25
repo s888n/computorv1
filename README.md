@@ -6,9 +6,18 @@
 - pull nd run valgrind ```bash docker run -tiv $PWD:/valgrind karek/valgrind:latest ```
 - run ```valgrind ./computor "args..." ```
 
+## notes
+- since math.h is not allowed , use **Newton’s Method** to calculate the square root
+- my parser is sloppy and i have to do a lot of patching and handling of edge cases, i'm looking into implementing a proper lexer and parser using  **Recursive Descent Parsing** 
+- it is worth it to spend as mush time as possible on RDP since i will be using it on other projects
+- for printing fraction we multiply the double by 1e6 for example to preserve 6 degrees of percision then find the gcd
+
 ## resources
 - [Square Roots via Newton’s Method](https://math.mit.edu/~stevenj/18.335/newton-sqrt.pdf)
-
+- [Recursive Descent Parsing](https://www.youtube.com/watch?v=SToUyjAsaFk&ab_channel=hhp3)
+- [the best article i've read about the parsing](https://craftinginterpreters.com/scanning.html)
+- [LL Parsing and Recursive Descent ](https://blog.jeffsmits.net/ll-parsing-recursive-descent/)
+- [Grammars, parsing, and recursive descent - good video](https://www.youtube.com/watch?v=ENKT0Z3gldE&ab_channel=KayLack)
 ```c
 #include <stdio.h>
 #include <stdlib.h>
@@ -29,6 +38,23 @@ typedef struct {
 int gcd(int a, int b) {
     if (b == 0) return abs(a);
     return gcd(b, a % b);
+}
+
+int gcd2(double a, double b){
+  // making a and b postive cause we dont need the sign
+  if(a < 0) a = -a ;
+  if(b < 0) b = -a ;
+
+  // savin 6 degrees of percsion , good enought
+  long la = a * 1e6;
+  long lb = b * 1e6;
+
+  while (b != 0){
+    long t = a % b;
+    a = b;
+    b = t;
+  }
+  return a;
 }
 
 // ---------------------------
@@ -197,13 +223,11 @@ void solve(Polynomial *poly) {
             printf("No solution.\n");
     }
     else if (deg == 1) {
-        double a = poly->coeffs[1];
-        double b = poly->coeffs[0];
-
+        double a = poly->coeffs[1], b = poly->coeffs[0];
         printf("Equation: %gx + %g = 0\n", a, b);
 
-        int num = (int)(-b * 1000000);
-        int den = (int)(a * 1000000);
+        int num = (int)(-b * 1e6);
+        int den = (int)(a * 1e6);
         if (den != 0) {
             int g = gcd(num, den);
             num /= g; den /= g;

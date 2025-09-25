@@ -1,4 +1,26 @@
-# include "computor.h"
+#include "../include/computor.h"
+
+// node
+Node *new_node(NodeType type, double value, Node *left, Node *right, int pos) {
+  Node *node = (Node*)malloc(sizeof(Node));
+  if (!node){ 
+    fprintf(stderr, "Couldn't allocate memory, you ran out of RAM ? ¯\\_(ツ)_/¯ \n");
+    exit(1);
+    }
+  node->type = type;
+  node->value = value;
+  node->left = left;
+  node->right = right; 
+  node->pos = pos;
+  return node;
+}
+
+void free_node(Node *root) {
+  if (!root) return;
+  free_node(root->left);
+  free_node(root->right);
+  free(root);
+}
 
 // math stuff
 double m_abs(double x){
@@ -57,98 +79,15 @@ void print_fraction(long long num, long long den) {
     else printf("%lld/%lld\n", num, den);
 }
 
-// void print_reduced_form(int degree) {
-//     printf("Reduced form: ");
-//     int first = 1;
-//     for (int i = 0; i <= degree; i++) {
-//         if (my_abs(coef[i]) > 1e-12) {
-//             if (!first && coef[i] >= 0) printf("+ ");
-//             printf("%.6g * X^%d ", coef[i], i);
-//             first = 0;
-//         }
-//     }
-//     if (first) printf("0 ");
-//     printf("= 0\n");
-// }
+static void print_indent(const char *prefix, int is_tail) {
+    printf("%s", prefix);
+    printf(is_tail ? "└── " : "├── ");
+}
 
+void poly_zero(Polynomial *p){
 
+}
 
-// int is_integer(double x) {
-//     long long r = (long long)(x + (x >= 0 ? 0.5 : -0.5));
-//     return (my_abs(x - r) < 1e-9);
-// }
-// double my_abs(double x) {
-//     return (x < 0) ? -x : x;
-// }
-
-
-
-// // void solve(int degree) {
-// //     printf("Polynomial degree: %d\n", degree);
-
-// //     if (degree == 0) {
-// //         if (my_abs(coef[0]) < 1e-12)
-// //             printf("Any real number is a solution.\n");
-// //         else
-// //             printf("No solution.\n");
-// //     }
-// //     else if (degree == 1) {
-// //         double a = coef[1], b = coef[0];
-// //         double sol = -b / a;
-
-// //         long long num = -(long long)(b * 1000000);
-// //         long long den = (long long)(a * 1000000);
-// //         long long g = my_gcd(num, den);
-// //         num /= g; den /= g;
-
-// //         printf("The solution is:\n");
-// //         if (den == 1) printf("%lld\n", num);
-// //         else printf("%lld/%lld\n", num, den);
-// //     }
-// //     else if (degree == 2) {
-// //         double a = coef[2], b = coef[1], c = coef[0];
-// //         double delta = b*b - 4*a*c;
-
-// //         if (delta > 0) {
-// //             printf("Discriminant is strictly positive, the two solutions are:\n");
-// //             double sqrt_delta = my_sqrt(delta);
-// //             double x1 = (-b - sqrt_delta) / (2*a);
-// //             double x2 = (-b + sqrt_delta) / (2*a);
-
-// //             // check if roots are rational
-// //             if (is_integer(sqrt_delta) && is_integer(2*a)) {
-// //                 long long num1 = -(long long)b - (long long)sqrt_delta;
-// //                 long long den1 = 2 * (long long)a;
-// //                 print_fraction(num1, den1);
-
-// //                 long long num2 = -(long long)b + (long long)sqrt_delta;
-// //                 long long den2 = 2 * (long long)a;
-// //                 print_fraction(num2, den2);
-// //             } else {
-// //                 printf("%lf\n%lf\n", x1, x2);
-// //             }
-// //         }
-// //         else if (my_abs(delta) < 1e-12) {
-// //             printf("Discriminant is zero, the solution is:\n");
-// //             double x = -b / (2*a);
-
-// //             if (is_integer(2*a) && is_integer(b)) {
-// //                 long long num = -(long long)b;
-// //                 long long den = 2 * (long long)a;
-// //                 print_fraction(num, den);
-// //             } else {
-// //                 printf("%lf\n", x);
-// //             }
-// //         }
-// //         else {
-// //             printf("Discriminant is strictly negative, the two complex solutions are:\n");
-// //             double real = -b / (2*a);
-// //             double imag = my_sqrt(-delta) / (2*a);
-// //             printf("%lf + %lfi\n", real, imag);
-// //             printf("%lf - %lfi\n", real, imag);
-// //         }
-// //     }
-// //     else {
-// //         printf("The polynomial degree is strictly greater than 2, I can't solve.\n");
-// //     }
-// // }
+void poly_add(Polynomial *dst, Polynomial *a, Polynomial *b, int sign){}
+void poly_mul(){}
+void poly_pow(){}
