@@ -1,5 +1,5 @@
 #include "../include/computor.h"
-
+#include <math.h>
 void parse_error(Parser *parser, const char *msg) {
     int pos = parser->lexer.cur.pos;
     fprintf(stderr, "Parse error at pos %d: %s\n", pos, msg);
@@ -18,6 +18,7 @@ double parse_number(const char *s, int *pos){
       lex_error(s, *pos, "'.' must be followed by digits for a valid number");
     (*pos)++;
   }
+
   while(*pos < len && (isdigit((unsigned char)s[*pos]) || s[*pos] == '.')){
     if(s[*pos] == '.'){
       if (hasdot)
@@ -30,23 +31,27 @@ double parse_number(const char *s, int *pos){
     (*pos)++;
   }
 
-  if(!hasdot && !hasdigit)
+  if(!hasdot && !hasdigit){
     lex_error(s, start, "expected digits for number");
+  }
 
-    len = *pos - start;
-    if (len <= 0 || len >= 128) lex_error(s, start, "invalid number length");
-    char buf[128];
-    memcpy(buf, s + start, len);
-    buf[len] = '\0';
+  len = *pos - start;
 
-    char *endptr = NULL;
-    double value = strtod(buf, &endptr);
-    if (endptr == buf || *endptr != '\0') {
-        lex_error(s, start, "failed to parse numeric literal");
-    }
+  if (len <= 0 || len >= 128){
+    lex_error(s, start, "invalid number length");
+  }
 
-    // if (value >= INT_MAX || value <= ) maybe limit ot the float range
-    return value;
+  char buf[128];
+  memcpy(buf, s + start, len);
+  buf[len] = '\0';
+  char *endptr = NULL;
+  double value = strtod(buf, &endptr);
+  if (endptr == buf || *endptr != '\0') {
+    lex_error(s, start, "failed to parse numeric literal");
+  }
+
+  // if (value >= INT_MAX || value <= ) maybe limit ot the float range
+  return value;
 
 }
 

@@ -41,8 +41,8 @@ void lex_next(Lexer *lexer){
       if(isdigit((unsigned char)c) || c == '.'){
         lexer->cur.value = parse_number(s, &pos);
         lexer->cur.type = T_NUM;
-        lexer->cur.pos = pos;
-        lexer->pos++; 
+        lexer->cur.pos = lexer->pos;
+        lexer->pos = pos; 
         return;
         }
       lex_error(s, pos, "unexpected character");
