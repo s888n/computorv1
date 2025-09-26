@@ -23,11 +23,19 @@ void free_node(Node *root) {
 }
 
 // math stuff
-double m_abs(double x){
+double sr_fabs(double x){
   return (x < 0) ? -x : x;
 }
 
-long long gcf(long long a, long long b){
+long long sr_llround(double x) {
+    return x >= 0.0 ? (long long)(x + 0.5) : (long long)(x - 0.5);
+}
+
+int is_zero(double x){
+  return sr_fabs(x) < EPSILON;
+}
+
+long long sr_gcf(long long a, long long b){
   if (a < 0) a = -a;
   if (b < 0) b = -b;
   while (b != 0) {
@@ -38,15 +46,9 @@ long long gcf(long long a, long long b){
   return a;
 }
 
-int get_degree(double *coef){
-  for(int i = MAX_DEGREE; i >= 0; i--){
-      if(m_abs(coef[i]) >= EPSILON)
-        return i;
-  }
-  return 0;
-}
+// x must be x >= 0
+double sr_sqrt(double x) {
 
-double m_sqrt(double x) {
     if (x < 0) return -1;
     if (x == 0) return 0;
     double guess = x / 2.0;
@@ -58,21 +60,17 @@ double m_sqrt(double x) {
 
 // strings stuff
 
-int is_space(char c){
-    return c == ' ' || c == '\n' || c == '\t' || c == '\r';
-}
-
 void trim_spaces(char *str) {
     char *p1 = str, *p2 = str;
     while (*p2) {
-        if (!is_space((unsigned char)*p2)) *p1++ = *p2;
+        if (!isspace((unsigned char)*p2)) *p1++ = *p2;
         p2++;
     }
     *p1 = 0;
 }
 
 void print_fraction(long long num, long long den) {
-    long long g = gcf(num, den);
+    long long g = sr_gcf(num, den);
     num /= g;
     den /= g;
     if (den == 1) printf("%lld\n", num);

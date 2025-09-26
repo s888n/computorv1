@@ -1,5 +1,31 @@
 #include "../include/computor.h"
 
+
+void print_reduced(const Polynomial *p, Options *opt) {
+    int first = 1;
+
+    (void) opt;
+    TODO("Add colored output");
+    printf("Reduced form: ");
+    for (int i = 0; i <= MAX_DEGREE; ++i) {
+
+        double value = p->coefs[i];
+        if (is_zero(value))
+          continue;
+        if (!first) {
+            value < 0.0 ? printf(" - ") : printf(" + ");
+        } else {
+            if (value < 0.0) printf("-");
+        }
+        printf("%.6g * X^%d", sr_fabs(value), i);
+        first = 0;
+    }
+    if (first)
+      printf("0 * X^0");
+    printf(" = 0\n");
+}
+
+
 static void print_indent(const char *prefix, int is_tail) {
   printf("%s", prefix);
   printf(is_tail ? "└── " : "├── ");

@@ -3,6 +3,8 @@
 void lex_error(const char *src, int pos, const char *msg){
   fprintf(stderr, "Lex error at pos %d: %s\n", pos, msg);
   // print_context(src, pos);
+  (void)src;
+  TODO("Add context for lexer errors");
   exit(1);
 }
 
@@ -12,39 +14,45 @@ void lex_init(Lexer *lexer, const char *input){
   lex_next(lexer);
 }
 
-void lex_next(Lexer *lexer){
-
+void lex_next(Lexer *lexer) {
   const char *s = lexer->src;
   int len = (int)strlen(s);
 
-  while(lexer->pos < len && isspace((unsigned char)s[lexer->pos])) lexer->pos++;
-
-  if(lexer->pos >= len){
-    lexer->cur.type = T_END;
-    lexer->cur.pos = lexer->pos;
-    return;
+  while (lexer->pos < len && isspace((unsigned char)s[lexer->pos])) {
+      lexer->pos++;
   }
 
-  char c = s[lexer->pos];
-  int  pos = lexer->pos;
+  if (lexer->pos >= len) {
+      lexer->cur.type = T_END;
+      lexer->cur.pos  = lexer->pos;
+      return;
+  }
 
-  switch (c){
-    case '+':  lexer->cur.type = T_PLUS; lexer->cur.pos = pos; lexer->pos++; return;
-    case '-':  lexer->cur.type = T_MINUS; lexer->cur.pos = pos; lexer->pos++; return;
-    case '*':  lexer->cur.type = T_MUL; lexer->cur.pos = pos; lexer->pos++; return;
-    case '^':  lexer->cur.type = T_POW; lexer->cur.pos = pos; lexer->pos++; return;
-    case '=':  lexer->cur.type = T_EQ; lexer->cur.pos = pos; lexer->pos++; return;
-    case '(':  lexer->cur.type = T_LPAREN; lexer->cur.pos = pos; lexer->pos++; return;
-    case ')':  lexer->cur.type = T_RPAREN; lexer->cur.pos = pos; lexer->pos++; return;
-    case 'X': case 'x': lexer->cur.type = T_VAR; lexer->cur.pos = pos; lexer->pos++; return;
+  char c  = s[lexer->pos];
+  int pos = lexer->pos;
+
+  switch (c) {
+    case '+': lexer->cur.type = T_PLUS;   break;
+    case '-': lexer->cur.type = T_MINUS;  break;
+    case '*': lexer->cur.type = T_MUL;    break;
+    case '^': lexer->cur.type = T_POW;    break;
+    case '=': lexer->cur.type = T_EQ;     break;
+    case '(': lexer->cur.type = T_LPAREN; break;
+    case ')': lexer->cur.type = T_RPAREN; break;
+    case 'X': case 'x':
+        lexer->cur.type = T_VAR;          break;
     default:
-      if(isdigit((unsigned char)c) || c == '.'){
-        lexer->cur.value = parse_number(s, &pos);
-        lexer->cur.type = T_NUM;
-        lexer->cur.pos = lexer->pos;
-        lexer->pos = pos; 
-        return;
+        if (isdigit((unsigned char)c) || c == '.') {
+            int p = lexer->pos;
+            double val = parse_number(s, &p);
+            lexer->cur.type  = T_NUM;
+            lexer->cur.value = val;
+            lexer->cur.pos   = pos;
+            lexer->pos       = p;
+            return;
         }
-      lex_error(s, pos, "unexpected character");
+        lex_error(s, pos, "unexpected character");
   }
+  lexer->cur.pos = pos;
+  lexer->pos++;
 }

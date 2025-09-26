@@ -1,5 +1,5 @@
 #include "../include/computor.h"
-#include <math.h>
+
 void parse_error(Parser *parser, const char *msg) {
     int pos = parser->lexer.cur.pos;
     fprintf(stderr, "Parse error at pos %d: %s\n", pos, msg);
@@ -104,11 +104,11 @@ Node *parse_factor(Parser *parser){
     if (parser->lexer.cur.type != T_NUM){
       parse_error(parser, "expected numeric exponent after '^'");
     }
-    
-    double raw_exp = parser->lexer.cur.value;
-    long long ieb = llround(raw_exp);
 
-    if (fabs(raw_exp - (double)ieb) > 1e-9){
+    double raw_exp = parser->lexer.cur.value;
+    long long ieb = sr_llround(raw_exp);
+
+    if (sr_fabs(raw_exp - (double)ieb) > 1e-9){
       char buf[128];
       snprintf(buf, sizeof(buf), "exponent must be an integer (found %g) at pos %d",\
         raw_exp, parser->lexer.cur.pos);
