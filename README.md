@@ -12,7 +12,7 @@ cd computorv1
 make
 ```
 
-## how to use
+## How to use
 ```bash
 ./computor -[ts] "<equation>"
 -t   Print the Abstract Syntax Tree
@@ -32,6 +32,8 @@ Factor := NUMBER | VAR | "(" Expression ")"
 NUMBER := "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "."
 VAR := "x" | "X"
 ```
+
+## Demo
 
 ## resources
 - [the best article i've read about parsing](https://craftinginterpreters.com/scanning.html)
