@@ -35,6 +35,10 @@ VAR := "x" | "X"
 
 ## Demo
 
+
+https://github.com/user-attachments/assets/0b826140-0d91-4815-9db2-45e94b255d0f
+
+
 ## resources
 - [the best article i've read about parsing](https://craftinginterpreters.com/scanning.html)
 - [Square Roots via Newton’s Method](https://math.mit.edu/~stevenj/18.335/newton-sqrt.pdf)
