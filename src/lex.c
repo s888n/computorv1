@@ -2,9 +2,8 @@
 
 void lex_error(const char *src, int pos, const char *msg){
   fprintf(stderr, "Lex error at pos %d: %s\n", pos, msg);
-  // print_context(src, pos);
   (void)src;
-  TODO("Add context for lexer errors");
+  // print_context(src, pos);
   exit(1);
 }
 
