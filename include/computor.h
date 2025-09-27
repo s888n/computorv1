@@ -9,13 +9,6 @@
 
 #define EPSILON 1e-12
 #define MAX_DEGREE 1024
-#define RESET   "\033[0m"
-#define RED     "\033[31m"
-#define GREEN   "\033[32m"
-#define YELLOW  "\033[33m"
-#define BLUE    "\033[34m"
-#define PINK    "\033[35m"
-#define CYAN    "\033[36m"
 
 #ifdef DEBUG
 # define TODO(msg) \
@@ -23,8 +16,6 @@
 #else
 # define TODO(msg) ((void)0)
 #endif
-
-
 
 typedef enum {
   T_NUM,
@@ -73,7 +64,6 @@ typedef struct {
 } Parser;
 
 typedef struct {
-  int color;
   int ast;
   int steps;
 } Options;
@@ -82,32 +72,41 @@ typedef struct { double coefs[MAX_DEGREE + 1]; } Polynomial;
 
 
 // lex.c
-void lex_init(Lexer *lexer, const char *input);
-void lex_error(const char *src, int pos, const char *msg);
-void lex_next(Lexer *lexer);
+void    lex_init(Lexer *lexer, const char *input);
+void    lex_error(const char *src, int pos, const char *msg);
+void    lex_next(Lexer *lexer);
 // parse.c
-void parse_error(Parser *parser, const char *msg);
-double parse_number(const char *s, int *pos);
-Node *parse_primary(Parser *parser);
-Node *parse_factor(Parser *parser);
-Node *parse_term(Parser *parser);
-Node *parse_expr(Parser *parser);
-Node *parse_equation(Parser *parser);
+void    parse_error(Parser *parser, const char *msg);
+double  parse_number(const char *s, int *pos);
+Node   *parse_primary(Parser *parser);
+Node   *parse_factor(Parser *parser);
+Node   *parse_term(Parser *parser);
+Node   *parse_expr(Parser *parser);
+Node   *parse_equation(Parser *parser);
 // solve.c
-void solve_equation(Polynomial *equation, Options *opt);
+void    solve_equation(Polynomial *equation, Options *opt);
 // eval.c
 Polynomial eval_node(Node *node);
-// print.c
-void print_ast(Node *node, const char *prefix, int is_tail);
-
 // utils.c
+void      fatal_error(const char *filename, const char *func_name, int line, const char *msg);
 // math //
-int is_zero(double x);
-double sr_fabs(double x);
-double sr_sqrt(double x);
+int       is_zero(double x);
+double    sr_fabs(double x);
+double    sr_sqrt(double x);
 long long sr_llround(double x);
-// node //
-void free_node(Node *root);
-Node *new_node(NodeType type, double value, Node *left, Node *right, int pos);
+long long sr_llabs(long long x);
 
+// node //
+void      free_node(Node *root);
+Node      *new_node(NodeType type, double value, Node *left, Node *right, int pos);
+
+// poly
+void      poly_pow(Polynomial *dst, const Polynomial *base, int exp);
+void      poly_mul(Polynomial *dst, const Polynomial *a, const Polynomial *b);
+void      poly_add(Polynomial *dst, const Polynomial *a, const Polynomial *b, int sign);
+
+// print.c
+void      print_number(double value, int is_complex);
+void      print_reduced(const Polynomial *p);
+void      print_ast(Node *node, const char *prefix, int is_tail);
 #endif

@@ -16,8 +16,7 @@ SRCS = $(wildcard $(SRCS_DIR)/*.c)
 OBJS = $(addprefix $(OBJ_DIR)/, $(notdir $(SRCS:.c=.o)))
 
 all: $(NAME)
-	@echo "$(PINK)$(NAME)$(GREEN) compiled successfully!$(RESET)"
-	@echo "$(BLUE)Usage: $(PINK)./$(NAME)$(BLUE) \"<polynomial>\" $(RESET)"
+	@echo "$(MAGENTA)$(NAME)$(GREEN) compiled successfully!$(RESET)"
 
 $(NAME): $(OBJ_DIR) $(OBJS)
 	@$(CC) $(CFLAGS) -o $(NAME) $(OBJS)

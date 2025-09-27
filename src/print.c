@@ -1,11 +1,8 @@
 #include "../include/computor.h"
 
 
-void print_reduced(const Polynomial *p, Options *opt) {
+void print_reduced(const Polynomial *p) {
     int first = 1;
-
-    (void) opt;
-    TODO("Add colored output");
     printf("Reduced form: ");
     for (int i = 0; i <= MAX_DEGREE; ++i) {
 
@@ -25,6 +22,28 @@ void print_reduced(const Polynomial *p, Options *opt) {
     printf(" = 0\n");
 }
 
+int print_fraction(double v, int is_complex) {
+    for (long long den = 1; den <= 1000000LL; den *= 10LL) {
+        long long num = sr_llround(v * (double)den);
+        double approx = (double)num / (double)den;
+        if (is_zero(approx - v)) {
+            long long d = den;
+            long long a = sr_llabs(num), b = den;
+            while (b) { long long t = a % b; a = b; b = t; }
+            long long gg = a ? a : 1;
+            num /= gg; d /= gg;
+            if (d == 1) printf("%lld %s", num, is_complex ? "i" : "");
+            else printf("%lld%s/%lld", num, is_complex ? "i" : "",d);
+            return 1;
+        }
+    }
+    return 0;
+}
+
+void print_number(double value, int is_complex){
+  if (!print_fraction(value, is_complex))
+      printf("%.6g%s", value, is_complex ? "i" : "" );
+}
 
 static void print_indent(const char *prefix, int is_tail) {
   printf("%s", prefix);
@@ -44,10 +63,11 @@ static const char *node_type_str(NodeType type) {
   }
 }
 
-void print_ast(Node *node, const char *prefix, int is_tail){
+void  print_ast(Node *node, const char *prefix, int is_tail){
 
-  if (!node) return;
+  char new_prefix [256];
 
+  if (!node)return;  
   print_indent(prefix, is_tail);
   switch (node->type) {
     case N_NUM:
@@ -60,10 +80,7 @@ void print_ast(Node *node, const char *prefix, int is_tail){
       printf("(%s)\n", node_type_str(node->type));
       break;
   }
-
-  char new_prefix[256];
   snprintf(new_prefix, sizeof(new_prefix), "%s%s", prefix, is_tail ? "    " : "│   ");
-
   if (node->left || node->right){
     if (node->left && node->right){
       print_ast(node->left, new_prefix, 0);

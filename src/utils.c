@@ -1,5 +1,10 @@
 #include "../include/computor.h"
 
+void fatal_error(const char *filename, const char *func_name, int line, const char *msg){
+  fprintf(stderr, "ERROR: %s:%s:%d → %s\n", filename, func_name, line, msg);
+  exit(69);
+}
+
 // node
 Node *new_node(NodeType type, double value, Node *left, Node *right, int pos) {
   Node *node = (Node*)malloc(sizeof(Node));
@@ -24,6 +29,10 @@ void free_node(Node *root) {
 
 // math stuff
 double sr_fabs(double x){
+  return (x < 0) ? -x : x;
+}
+
+long long sr_llabs(long long x){
   return (x < 0) ? -x : x;
 }
 
@@ -69,23 +78,60 @@ void trim_spaces(char *str) {
     *p1 = 0;
 }
 
-void print_fraction(long long num, long long den) {
-    long long g = sr_gcf(num, den);
-    num /= g;
-    den /= g;
-    if (den == 1) printf("%lld\n", num);
-    else printf("%lld/%lld\n", num, den);
+// void print_fraction(long long num, long long den) {
+//     long long g = sr_gcf(num, den);
+//     num /= g;
+//     den /= g;
+//     if (den == 1) printf("%lld\n", num);
+//     else printf("%lld/%lld\n", num, den);
+// }
+
+void poly_add(Polynomial *dst, const Polynomial *a, const Polynomial *b, int sign){
+  for (int i = 0; i <= MAX_DEGREE; ++i)
+    dst->coefs[i] = a->coefs[i] + sign * b->coefs[i];
 }
 
-static void print_indent(const char *prefix, int is_tail) {
-    printf("%s", prefix);
-    printf(is_tail ? "└── " : "├── ");
+void poly_mul(Polynomial *dst, const Polynomial *a, const Polynomial *b) {
+    Polynomial r = {{0.0}};
+
+    for (int i = 0; i <= MAX_DEGREE; ++i) {
+        double ai = a->coefs[i];
+        if (is_zero(ai))
+          continue;
+        for (int j = 0; j <= MAX_DEGREE - i; ++j) {
+            double bj = b->coefs[j];
+            if (is_zero(bj))
+              continue;
+            r.coefs[i + j] += ai * bj;
+        }
+    }
+    for (int k = 0; k <= MAX_DEGREE; ++k) dst->coefs[k] = r.coefs[k];
 }
 
-void poly_zero(Polynomial *p){
+void poly_pow(Polynomial *dst, const Polynomial *base, int exp) {
+    Polynomial result = {{0.0}};
+    result.coefs[0] = 1.0;
 
+    if (exp == 0) {
+        for (int i = 0; i <= MAX_DEGREE; ++i) dst->coefs[i] = result.coefs[i];
+        return;
+    }
+
+    Polynomial cur; 
+    for (int i = 0; i <= MAX_DEGREE; ++i) cur.coefs[i] = base->coefs[i];
+
+    while (exp > 0) {
+        if (exp & 1) {
+            Polynomial tmp1 = {{0.0}};
+            poly_mul(&tmp1, &result, &cur);
+            for (int i = 0; i <= MAX_DEGREE; ++i) result.coefs[i] = tmp1.coefs[i];
+        }
+        exp >>= 1;
+        if (exp) {
+            Polynomial tmp2 = {{0.0}};
+            poly_mul(&tmp2, &cur, &cur);
+            for (int i = 0; i <= MAX_DEGREE; ++i) cur.coefs[i] = tmp2.coefs[i];
+        }
+    }
+    for (int i = 0; i <= MAX_DEGREE; ++i) dst->coefs[i] = result.coefs[i];
 }
-
-void poly_add(Polynomial *dst, Polynomial *a, Polynomial *b, int sign){}
-void poly_mul(){}
-void poly_pow(){}
